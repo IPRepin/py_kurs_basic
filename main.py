@@ -3,6 +3,8 @@ from config import version
 from config import url_vk
 from config import yd_token
 from pprint import pprint
+import pandas as pd
+import json
 import time
 import requests
 class vk_foto_in_yd():
@@ -24,6 +26,11 @@ class vk_foto_in_yd():
         }
         req = requests.get(f'{photos_get_url}', params={**self.params_vk, **photos_get_params}).json()
         return req['response']['items']
+        # with open("foto_file.json", "w") as foto_file:
+        #     json.dump(req, foto_file)
+        #     return foto_file
+
+
 
     def get_headers(self):
         return {
@@ -43,7 +50,9 @@ class vk_foto_in_yd():
 def main():
     vk_id = input('Введите id пользователя: ')
     vk_client = vk_foto_in_yd(vk_id, yd_token)
-    pprint(vk_client.photos_get())
+    # pd.DataFrame(vk_client.photos_get())
+    # pprint(pd.DataFrame(vk_client.photos_get()))
+
 
 if __name__ == '__main__':
     main()

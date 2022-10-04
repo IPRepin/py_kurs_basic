@@ -25,11 +25,19 @@ class vk_foto_in_yd():
             'photo_sizes': '1',
         }
         req = requests.get(f'{photos_get_url}', params={**self.params_vk, **photos_get_params}).json()
-        return req['response']['items']
-        # with open("foto_file.json", "w") as foto_file:
-        #     json.dump(req, foto_file)
-        #     return foto_file
+        return req
 
+
+
+
+    def photo_file(self, reg):
+        file_dic = {}
+        for file in req[0]['sizes']['type']:
+            for name in req['date']:
+                for url in req['url']:
+                    if file == 'z':
+                        file_dic[url] = name
+        pprint(file_dic)
 
 
     def get_headers(self):
@@ -51,7 +59,10 @@ def main():
     vk_id = input('Введите id пользователя: ')
     vk_client = vk_foto_in_yd(vk_id, yd_token)
     # pd.DataFrame(vk_client.photos_get())
-    # pprint(pd.DataFrame(vk_client.photos_get()))
+    # pprint(vk_client.photos_get())
+    vk_client.photos_get()
+    vk_client.photo_file(vk_client.photos_get())
+
 
 
 if __name__ == '__main__':

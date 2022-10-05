@@ -25,19 +25,23 @@ class vk_foto_in_yd():
             'photo_sizes': '1',
         }
         req = requests.get(f'{photos_get_url}', params={**self.params_vk, **photos_get_params}).json()
-        return req
-
-
-
-
-    def photo_file(self, reg):
         file_dic = {}
         for file in req[0]['sizes']['type']:
             for name in req['date']:
                 for url in req['url']:
                     if file == 'z':
                         file_dic[url] = name
-        pprint(file_dic)
+        # pprint(file_dic)
+
+
+
+
+    # def photo_file(self, reg):
+    #     file_size = []
+    #     for file in [0]['sizes']['type']:
+    #         if file == 'z':
+    #             file_size.extend(file)
+    #     pprint(file_size)
 
 
     def get_headers(self):
@@ -61,7 +65,7 @@ def main():
     # pd.DataFrame(vk_client.photos_get())
     # pprint(vk_client.photos_get())
     vk_client.photos_get()
-    vk_client.photo_file(vk_client.photos_get())
+
 
 
 

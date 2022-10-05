@@ -3,9 +3,7 @@ from config import version
 from config import url_vk
 from config import yd_token
 from pprint import pprint
-import pandas as pd
 import json
-import time
 import requests
 class vk_foto_in_yd():
     def __init__(self, vk_id, yd_id):
@@ -25,23 +23,26 @@ class vk_foto_in_yd():
             'photo_sizes': '1',
         }
         req = requests.get(f'{photos_get_url}', params={**self.params_vk, **photos_get_params}).json()
-        file_dic = {}
-        for file in req[0]['sizes']['type']:
-            for name in req['date']:
-                for url in req['url']:
-                    if file == 'z':
-                        file_dic[url] = name
-        # pprint(file_dic)
+        req_json = req['response']['items']
+        return req_json
 
 
+    def photo_file(self):
+        fotos = []
+        photos_def = self.photos_get()
+        for item in photos_def:
+            liks_count = item['likes']['count']
+            date = item['date']
+            name = f'{liks_count}_{date}.jpg'
+            max_photo = item['sizes'][-1]
+            photo_dict = {"name": name, "type": max_photo['type'], "url": max_photo['url']}
+            fotos.append(photo_dict)
+        self.save_to_json(fotos)
+        return fotos
 
-
-    # def photo_file(self, reg):
-    #     file_size = []
-    #     for file in [0]['sizes']['type']:
-    #         if file == 'z':
-    #             file_size.extend(file)
-    #     pprint(file_size)
+    def save_to_json(self, photo):
+        with open('photo_json', 'w', encoding='utf8') as photo_file:
+            json.dump(photo, photo_file)
 
 
     def get_headers(self):
@@ -49,24 +50,32 @@ class vk_foto_in_yd():
             'Content-Type': 'application/json',
             'Authorization': 'OAuth {}'.format(self.yd_id)}
 
-    def _get_upload_link(self, disk_file_path):
+    def yd_folder(self):
+        folder_url = 'https://cloud-api.yandex.net/v1/disk/resources/'
+        params = {"path": "vk-photo"}
+        folder = requests.put(folder_url, params=params)
+        folder.raise_for_status()
+        return folder
+    def yd_upload(self):
         upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
-        headers = self.get_headers()
-        url_file_path = None # доделать логику получения ссылки на файл
-        params = {"path": url_file_path, "overwrite": "true"}
-        response = requests.get(upload_url, headers=headers, params=params)
-        return response.json()
-
+        photos_lst = self.photo_file()
+        folder_path = self.yd_folder()
+        for item in photos_lst:
+            url = item['url']
+            params = {"path": folder_path, "url": url}
+            upload = requests.post(upload_url, params=params)
+            upload.raise_for_status()
 
 
 def main():
     vk_id = input('Введите id пользователя: ')
     vk_client = vk_foto_in_yd(vk_id, yd_token)
-    # pd.DataFrame(vk_client.photos_get())
-    # pprint(vk_client.photos_get())
     vk_client.photos_get()
-
-
+    vk_client.photo_file()
+    vk_client.save_to_json()
+    vk_client.get_headers()
+    vk_client.yd_folder()
+    vk_client.yd_upload()
 
 
 if __name__ == '__main__':

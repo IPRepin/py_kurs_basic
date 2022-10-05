@@ -3,6 +3,7 @@ from config import version
 from config import url_vk
 from config import yd_token
 from pprint import pprint
+from tqdm import tqdm
 import json
 import requests
 class vk_foto_in_yd():
@@ -60,6 +61,8 @@ class vk_foto_in_yd():
         upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
         photos_lst = self.photo_file()
         folder_path = self.yd_folder()
+        for photos_lst in tqdm(range(10)):
+            pass
         for item in photos_lst:
             url = item['url']
             params = {"path": folder_path, "url": url}

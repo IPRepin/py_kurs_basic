@@ -53,9 +53,10 @@ class vk_foto_in_yd():
 
     def yd_folder(self):
         folder_url = 'https://cloud-api.yandex.net/v1/disk/resources/'
-        params = {"path": "vk-photo"}
+        folder_name = 'vk-photo'
+        params = {"path": folder_name}
         folder = requests.put(folder_url, params=params)
-        return folder
+        return folder.json()
     def yd_upload(self):
         upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
         photos_lst = self.photo_file()
@@ -71,7 +72,7 @@ def main():
     vk_client = vk_foto_in_yd(vk_id, yd_token)
     vk_client.photos_get()
     vk_client.photo_file()
-    # vk_client.save_to_json()
+    # vk_client.save_to_json(#что сюда подставлять в обязательный параметр?)
     vk_client.get_headers()
     vk_client.yd_folder()
     vk_client.yd_upload()

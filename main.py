@@ -55,27 +55,23 @@ class vk_foto_in_yd():
         folder_url = 'https://cloud-api.yandex.net/v1/disk/resources/'
         params = {"path": "vk-photo"}
         folder = requests.put(folder_url, params=params)
-        folder.raise_for_status()
         return folder
     def yd_upload(self):
         upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
         photos_lst = self.photo_file()
         folder_path = self.yd_folder()
-        for photos_lst in tqdm(range(10)):
-            pass
         for item in photos_lst:
             url = item['url']
             params = {"path": folder_path, "url": url}
             upload = requests.post(upload_url, params=params)
-            upload.raise_for_status()
-
+            return upload
 
 def main():
     vk_id = input('Введите id пользователя: ')
     vk_client = vk_foto_in_yd(vk_id, yd_token)
     vk_client.photos_get()
     vk_client.photo_file()
-    vk_client.save_to_json()
+    # vk_client.save_to_json()
     vk_client.get_headers()
     vk_client.yd_folder()
     vk_client.yd_upload()

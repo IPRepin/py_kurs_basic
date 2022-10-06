@@ -65,16 +65,15 @@ class vk_foto_in_yd():
             url = item['url']
             params = {"path": folder_path, "url": url}
             upload = requests.post(upload_url, params=params)
-            return upload
+            stat = upload.status_code()
+            print(stat)
+            # return upload
 
 def main():
     vk_id = input('Введите id пользователя: ')
     vk_client = vk_foto_in_yd(vk_id, yd_token)
     vk_client.photos_get()
-    vk_client.photo_file()
-    # vk_client.save_to_json(#что сюда подставлять в обязательный параметр?)
     vk_client.get_headers()
-    vk_client.yd_folder()
     vk_client.yd_upload()
 
 

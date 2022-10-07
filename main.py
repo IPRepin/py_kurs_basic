@@ -61,7 +61,7 @@ class vk_foto_in_yd():
         upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
         photos_lst = self.photo_file()
         folder_path = self.yd_folder()
-        for item in photos_lst:
+        for item in tqdm(photos_lst):
             url = item['url']
             params = {"path": folder_path, "url": url}
             upload = requests.post(upload_url, params=params)
